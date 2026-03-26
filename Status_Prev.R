@@ -64,14 +64,6 @@ library(ROCR)
 ## CT ## CT values must be put in as negative since negative correlation!!
 ### Timepoint 1 ###
 
-predictions1<- rep(list(na.omit(-ct[,1])),10) ### must omit NA values for ROCR
-
-labels1<-status1_bin[c(sample(500,10, replace=F)),which(!is.na(ct[,1]))] ### binary status draws for which there are no NA values in CT
-labels1_list<-as.list(as.data.frame(t(labels1))) ### convert binary status matrix, so each draw is an element in list
-
-pred1<- prediction(predictions1, labels1_list) ## create prediction object ###
-perf1<- performance(pred1,"tpr","fpr") ## ROC performance object- true positive vs false positive
-
 plot(perf1,
      avg= "threshold",
      spread.estimate= "stddev",
@@ -81,7 +73,6 @@ plot(perf1,
      text.adj = c(-1, 1),
      lwd=2,
      main= "CT, PreT")
-#perf1<- performance(pred, "sens", "spec") ### Sensitivty/specificity plots
 
 
 #### Timepoint 2 ###
