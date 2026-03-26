@@ -64,7 +64,7 @@ library(ROCR)
 ## CT ## CT values must be put in as negative since negative correlation!!
 ### Timepoint 1 ###
 
-plot(perf1,
+plot(roc_ct_1,
      avg= "threshold",
      spread.estimate= "stddev",
      spread.scale=2,
@@ -76,14 +76,8 @@ plot(perf1,
 
 
 #### Timepoint 2 ###
-predictions2<- rep(list(na.omit(-ct[,2])),500) 
 
-labels2<-status2_bin[,which(!is.na(ct[,2]))] 
-labels2_list<-as.list(as.data.frame(t(labels2))) 
-
-pred2<- prediction(predictions2, labels2_list) 
-perf2<- performance(pred2,"tpr","fpr") 
-plot(perf2,
+plot(roc_ct_2,
      avg= "threshold",
      spread.estimate= "stddev",
      spread.scale=2,
@@ -94,14 +88,8 @@ plot(perf2,
      main= "CT, wk3")
 
 #### Timepoint 3 ###
-predictions3<- rep(list(na.omit(-ct[,3])),500) 
 
-labels3<-status3_bin[,which(!is.na(ct[,3]))] 
-labels3_list<-as.list(as.data.frame(t(labels3))) 
-
-pred3<- prediction(predictions3, labels3_list) 
-perf3<- performance(pred3,"tpr","fpr") 
-plot(perf3,
+plot(roc_ct_3,
      avg= "threshold",
      spread.estimate= "stddev",
      spread.scale=2,
@@ -113,7 +101,7 @@ plot(perf3,
 
 
 #### Timepoint 4 ###
-plot(perf4,
+plot(roc_ct_4,
      avg= "threshold",
      spread.estimate= "stddev",
      spread.scale=2,
@@ -131,7 +119,7 @@ labels_all_list<-as.list(as.data.frame(t(labels_all)))
 
 pred_all<- prediction(predictions_all, labels_all_list) 
 perf_all<- performance(pred_all,"tpr","fpr") 
-plot(perf_all,
+plot(roc_ct_all,
      avg= "threshold",
      spread.estimate= "stddev",
      spread.scale=2,
