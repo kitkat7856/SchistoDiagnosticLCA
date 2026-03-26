@@ -122,22 +122,7 @@ plot(perf3,
 
 
 #### Timepoint 4 ###
-predictions4<- rep(list(na.omit(-ct[,4])),500) 
 
-labels4<-status4_bin[,which(!is.na(ct[,4]))] 
-labels4_list<-as.list(as.data.frame(t(labels4))) 
-
-pred4<- prediction(predictions4, labels4_list) 
-perf4<- performance(pred4,"tpr","fpr") 
-plot(perf4,
-     avg= "threshold",
-     spread.estimate= "stddev",
-     spread.scale=2,
-     show.spread.at = c(-35,-38,-40),
-     print.cutoffs.at = c(-35,-38,-40),
-     text.adj = c(0, -1),
-     lwd=2,
-     main= "CT, 6mo")
 
 #### All Timepoint averaged ####
 predictions_all<- rep(list(na.omit(c(-ct))),500)
