@@ -122,7 +122,15 @@ plot(perf3,
 
 
 #### Timepoint 4 ###
-
+plot(perf4,
+     avg= "threshold",
+     spread.estimate= "stddev",
+     spread.scale=2,
+     show.spread.at = c(-38,-40),
+     print.cutoffs.at = c(-38,-40),
+     text.adj = c(0, -1),
+     lwd=2,
+     main= "CT, 6mo")
 
 #### All Timepoint averaged ####
 predictions_all<- rep(list(na.omit(c(-ct))),500)
@@ -132,7 +140,7 @@ labels_all_list<-as.list(as.data.frame(t(labels_all)))
 
 pred_all<- prediction(predictions_all, labels_all_list) 
 perf_all<- performance(pred_all,"tpr","fpr") 
-plot(perf4,
+plot(perf_all,
      avg= "threshold",
      spread.estimate= "stddev",
      spread.scale=2,
@@ -143,7 +151,7 @@ plot(perf4,
      main= "CT, all time")
 
 
-getROC<- function(diagnostic, timepoint, binary_status){
+createROC<- function(diagnostic, timepoint, binary_status){
   if(length(unique(as.vector(as.matrix(binary_status))))!=2){
     stop("Status must be binary")
   }
@@ -162,4 +170,24 @@ getROC<- function(diagnostic, timepoint, binary_status){
   
   return(roc)
 }
+createSS<- function(diagnostic, timepoint, binary_status){
+  if(length(unique(as.vector(as.matrix(binary_status))))!=2){
+    stop("Status must be binary")
+  }
+  
+  a<- 1 + 210*(timepoint-1)
+  b<- 210*timepoint
+  
+  l<- binary_status[,a:b]
+  
+  prediction<- rep(list(na.omit(diagnostic[,timepoint])),500)
+  label<- l[,which(!is.na(diagnostic[,timepoint]))]
+  label_list<- as.list(as.data.frame(t(label)))
+  
+  pred<-prediction(prediction,label_list)
+  ss<- performance(pred, "sens", "spec")
+  
+  return(ss)
+}
+
 
