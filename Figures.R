@@ -166,6 +166,7 @@ ggplot(dbs_logcurve, aes(x=x*24,y=meanline)) +
 
 ### Status at each timepoint #####
 set.seed(123)
+
 # Posterior probability estimates #
 timepoints<- c("PreT", "3wk", "9wk", "6mo")
 prob<- select(out, starts_with("prob["))
@@ -271,15 +272,6 @@ roc_ct_2<- createROC(-ct,2,status_samples_bin)
 roc_ct_3<- createROC(-ct,3,status_samples_bin)
 roc_ct_4<- createROC(-ct,4,status_samples_bin)
 
-#### CT all time points, get cutoff
-predictions_all<- rep(list(na.omit(c(-ct))),500)
-
-labels_all<-status_samples_bin[,which(!is.na(c(ct)))] 
-labels_all_list<-as.list(as.data.frame(t(labels_all))) 
-
-pred_all<- prediction(predictions_all, labels_all_list) 
-ss_ct<- performance(pred_all,"sens","spec") 
-getoptcut(ss_ct,500)
 
 ### plot and save roc final figures ###
 pdf("ROC Stool CT curves.pdf")
@@ -288,8 +280,8 @@ plot(roc_ct_1,
      avg= "threshold",
      spread.estimate= "stddev",
      spread.scale=2,
-     show.spread.at = c(-30,-35,-40,-45),
-     print.cutoffs.at = c(-30,-35,-40,-45),
+     show.spread.at = c(-38,-40,-45),
+     print.cutoffs.at = c(-38,-40,-45),
      cutoff.label.function = abs,
      text.adj = c(-0.2, 1),
      lwd=3,
@@ -300,8 +292,8 @@ plot(roc_ct_2,
      avg= "threshold",
      spread.estimate= "stddev",
      spread.scale=2,
-     show.spread.at = c(-30,-35,-40,-45),
-     print.cutoffs.at = c(-30,-35,-40,-45),
+     show.spread.at = c(-35,-38,-40,-45),
+     print.cutoffs.at = c(-35,-38,-40,-45),
      cutoff.label.function = abs,
      text.adj = c(-0.2, 1.2),
      lwd=3,
@@ -312,8 +304,8 @@ plot(roc_ct_3,
      avg= "threshold",
      spread.estimate= "stddev",
      spread.scale=2,
-     show.spread.at = c(-30,-35,-40,-45),
-     print.cutoffs.at = c(-30,-35,-40,-45),
+     show.spread.at = c(-38,-45),
+     print.cutoffs.at = c(-38,-45),
      cutoff.label.function = abs,
      text.adj = c(0.75, 2),
      lwd=3,
@@ -324,8 +316,8 @@ plot(roc_ct_4,
      avg= "threshold",
      spread.estimate= "stddev",
      spread.scale=2,
-     show.spread.at = c(-30,-40,-45, round(cut4$cut2)),
-     print.cutoffs.at = c(-30,-40,-45),
+     show.spread.at = c(-38,-40,-45),
+     print.cutoffs.at = c(-38,-40,-45),
      cutoff.label.function = abs,
      text.adj = c(0.75, 2),
      lwd=3,
@@ -337,17 +329,17 @@ dev.off()
 
 
 #### ROC KK ####
-roc_kk_1<- createROC(kk,1,status_samples_bin)
-roc_kk_2<- createROC(kk,2,status_samples_bin)
-roc_kk_3<- createROC(kk,3,status_samples_bin)
-roc_kk_4<- createROC(kk,4,status_samples_bin)
+roc_kk_1<- createROC(kkmean,1,status_samples_bin)
+roc_kk_2<- createROC(kkmean,2,status_samples_bin)
+roc_kk_3<- createROC(kkmean,3,status_samples_bin)
+roc_kk_4<- createROC(kkmean,4,status_samples_bin)
 
 ### plot and save roc final figures ####
 
 pdf("ROC KK curves.pdf")
 par(mfrow=c(2,2))
 plot(roc_kk_1,
-     avg= "threshold",
+     avg= "horizontal",
      spread.estimate= "stddev",
      spread.scale=2,
      text.adj = c(-0.5, 0.5),
@@ -356,7 +348,7 @@ plot(roc_kk_1,
      main = "Pre-Treatment, KK")
 abline(0,1)
 plot(roc_kk_2,
-     avg= "threshold",
+     avg= "horizontal",
      spread.estimate= "stddev",
      spread.scale=2,
      cutoff.label.function = abs,
@@ -366,7 +358,7 @@ plot(roc_kk_2,
      main = "three weeks, KK") 
 abline(0,1)
 plot(roc_kk_3,
-     avg= "threshold",
+     avg= "horizontal",
      spread.estimate= "stddev",
      spread.scale=2,
      cutoff.label.function = abs,
@@ -376,7 +368,7 @@ plot(roc_kk_3,
      main = "nine weeks, KK")
 abline(0,1)
 plot(roc_kk_4,
-     avg= "threshold",
+     avg= "horizontal",
      spread.estimate= "stddev",
      spread.scale=2,
      cutoff.label.function = abs,
@@ -425,8 +417,8 @@ plot(roc_G_3,
      avg= "threshold",
      spread.estimate= "stddev",
      spread.scale=2,
-     how.spread.at = c(1,2,3,4,5,6,7,8,9,10, round(cut3$cut2)),
-     print.cutoffs.at = c(1,2,3,4,5,6,7,8,9,10, round(cut3$cut2)),
+     how.spread.at = c(1,2,3,4,5,6,7,8,9,10),
+     print.cutoffs.at = c(1,2,3,4,5,6,7,8,9,10),
      cutoff.label.function = abs,
      text.adj = c(0.75, 2),
      lwd=3,
@@ -437,8 +429,8 @@ plot(roc_G_4,
      avg= "threshold",
      spread.estimate= "stddev",
      spread.scale=2,
-     show.spread.at =  c(1,2,3,4,5,6,7,8,9,10, round(cut3$cut2)),
-     print.cutoffs.at =  c(1,2,3,4,5,6,7,8,9,10, round(cut3$cut2)),
+     show.spread.at =  c(1,2,3,4,5,6,7,8,9,10),
+     print.cutoffs.at =  c(1,2,3,4,5,6,7,8,9,10),
      cutoff.label.function = abs,
      text.adj = c(0.75, 2),
      lwd=3,
@@ -451,10 +443,10 @@ dev.off()
 
 
 ##### ROC DBS pcr######
-roc_dbs_1<- createROC(dbs,1,status_samples_bin)
-roc_dbs_2<- createROC(dbs,2,status_samples_bin)
-roc_dbs_3<- createROC(dbs,3,status_samples_bin)
-roc_dbs_4<- createROC(dbs,4,status_samples_bin)
+roc_dbs_1<- createROC(dbs.ct,1,status_samples_bin)
+roc_dbs_2<- createROC(dbs.ct,2,status_samples_bin)
+roc_dbs_3<- createROC(dbs.ct,3,status_samples_bin)
+roc_dbs_4<- createROC(dbs.ct,4,status_samples_bin)
 
 
 ### plot and save ROC final figures ####
@@ -464,45 +456,31 @@ plot(roc_dbs_1,
      avg= "threshold",
      spread.estimate= "stddev",
      spread.scale=2,
-     show.spread.at = c(-35,-40,-45),
-     print.cutoffs.at = c(-35,-40,-45),
-     text.adj = c(0.5,2),
      lwd=3,
      col= "red",
      main = "Pre-Treatment, DBS qPCR")
 abline(0,1)
 plot(roc_dbs_2,
-     avg= "threshold",
+     avg= "vertical",
      spread.estimate= "stddev",
-     spread.scale=2,
-     how.spread.at = c(-35,-40,-45),
-     print.cutoffs.at = c(-35,-40,-45),
-     cutoff.label.function = abs,
-     text.adj = c(0.75, 2),
+     spread.scale=2,,
      lwd=3,
      col= "red",
      main = "three weeks, DBS qpcr") 
 abline(0,1)
 plot(roc_dbs_3,
-     avg= "threshold",
+     avg= "vertical",
      spread.estimate= "stddev",
      spread.scale=2,
-     how.spread.at = c(-35,-40,-45),
-     print.cutoffs.at = c(-35,-40,-45),
-     cutoff.label.function = abs,
      text.adj = c(0.75, 2),
      lwd=3,
      col= "red",
      main = "nine weeks, DBS qpcr")
 abline(0,1)
 plot(roc_dbs_4,
-     avg= "threshold",
+     avg= "vertical",
      spread.estimate= "stddev",
      spread.scale=2,
-     show.spread.at =  c(-35,-40,-45),
-     print.cutoffs.at =  c(-35,-40,-45),
-     cutoff.label.function = abs,
-     text.adj = c(0.75, 2),
      lwd=3,
      col= "red",
      main = "six months, DBS qpcr")
@@ -511,6 +489,28 @@ abline(0,1)
 dev.off()
 
 ### Sensitivity Specificity at each timepoint 
+#### CT all time points, get cutoff
+#ct
+predictions_all_ct<- rep(list(na.omit(c(-ct))),500)
+
+labels_all_ct<-status_samples_bin[,which(!is.na(c(ct)))] 
+labels_all_ct<-as.list(as.data.frame(t(labels_all_ct))) 
+
+pred_all_ct<- prediction(predictions_all_ct, labels_all_ct) 
+ss_ct<- performance(pred_all_ct,"sens","spec") 
+getoptcut(ss_ct,500)
+getss(ss_ct,500,38)
+
+#gscore
+predictions_all_G<- rep(list(na.omit(c(gscore+1))),500)
+
+labels_all_G<-status_samples_bin[,which(!is.na(c(gscore)))] 
+labels_all_G<-as.list(as.data.frame(t(labels_all_G))) 
+
+pred_all_G<- prediction(predictions_all_G, labels_all_G) 
+ss_G<- performance(pred_all_G,"sens","spec") 
+getoptcut(ss_G,500)
+getss(ss_G,500,3)
 
 #sesp<-matrix(NA,4,8)
 #sesp[1,]<- as.numeric(c(getss(ss.kk.1,500,0.1)[,1:2],getss(ss.kk.2,500,0.1)[,1:2],getss(ss.kk.3,500,0.15)[,1:2],getss(ss.kk.4,500,0.1)[,1:2]))
