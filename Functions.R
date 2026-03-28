@@ -398,3 +398,23 @@ createSS<- function(diagnostic, timepoint, binary_status){
   
   return(ss)
 }
+getoptcut<- function(ss, samples){
+  optse<- c()
+  optsp<- c()
+  optcut2<-c()
+  for(i in 1:samples){
+    cutpoints<- c(unlist(ss@alpha.values[[i]]))
+    sensitivity<- c(unlist(ss@y.values[[i]]))
+    specificity<- c(unlist(ss@x.values[[i]]))
+    
+    d<- sqrt((1-sensitivity)^2 + (1-specificity)^2)
+    optcut2[i]<- cutpoints[which.min(d)]
+    optse[i]<- sensitivity[which(cutpoints == optcut2[i])]
+    optsp[i]<- specificity[which(cutpoints == optcut2[i])]
+    
+  }
+  d<- data.frame(cut2= mean(optcut2), se= mean(optse), sp=mean(optsp), sdse=sd(optse), sdsp=sd(optsp))
+  print(d)
+}
+
+
