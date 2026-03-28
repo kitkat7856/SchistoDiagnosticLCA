@@ -358,3 +358,43 @@ eggworm <- function (N, Ti, KK, Gscore, CT, Hatch) {
   return(Results)
 } 
 
+###### ROC FUNCTIONS ######
+
+createROC<- function(diagnostic, timepoint, binary_status){
+  if(length(unique(as.vector(as.matrix(binary_status))))!=2){
+    stop("Status must be binary")
+  }
+  
+  a<- 1 + 210*(timepoint-1)
+  b<- 210*timepoint
+  
+  l<- binary_status[,a:b]
+  
+  prediction<- rep(list(na.omit(diagnostic[,timepoint])),500)
+  label<- l[,which(!is.na(diagnostic[,timepoint]))]
+  label_list<- as.list(as.data.frame(t(label)))
+  
+  pred<-prediction(prediction,label_list)
+  roc<- performance(pred,"tpr","fpr")
+  
+  return(roc)
+}
+createSS<- function(diagnostic, timepoint, binary_status){
+  if(length(unique(as.vector(as.matrix(binary_status))))!=2){
+    stop("Status must be binary")
+  }
+  
+  a<- 1 + 210*(timepoint-1)
+  b<- 210*timepoint
+  
+  l<- binary_status[,a:b]
+  
+  prediction<- rep(list(na.omit(diagnostic[,timepoint])),500)
+  label<- l[,which(!is.na(diagnostic[,timepoint]))]
+  label_list<- as.list(as.data.frame(t(label)))
+  
+  pred<-prediction(prediction,label_list)
+  ss<- performance(pred, "sens", "spec")
+  
+  return(ss)
+}
