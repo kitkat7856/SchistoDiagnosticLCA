@@ -1,3 +1,4 @@
+source("Functions.R")
 
 ### Select status posteriors, sample 500
 set.seed(123)
@@ -64,6 +65,7 @@ library(ROCR)
 ## CT ## CT values must be put in as negative since negative correlation!!
 ### Timepoint 1 ###
 
+roc_ct_1<- createROC(-ct,1,status_samples_bin)
 plot(roc_ct_1,
      avg= "threshold",
      spread.estimate= "stddev",
@@ -76,7 +78,7 @@ plot(roc_ct_1,
 
 
 #### Timepoint 2 ###
-
+roc_ct_2<- createROC(-ct,2,status_samples_bin)
 plot(roc_ct_2,
      avg= "threshold",
      spread.estimate= "stddev",
@@ -88,7 +90,7 @@ plot(roc_ct_2,
      main= "CT, wk3")
 
 #### Timepoint 3 ###
-
+roc_ct_3<- createROC(-ct,3,status_samples_bin)
 plot(roc_ct_3,
      avg= "threshold",
      spread.estimate= "stddev",
@@ -101,6 +103,7 @@ plot(roc_ct_3,
 
 
 #### Timepoint 4 ###
+roc_ct_4<- createROC(-ct,4,status_samples_bin)
 plot(roc_ct_4,
      avg= "threshold",
      spread.estimate= "stddev",
@@ -113,12 +116,14 @@ plot(roc_ct_4,
 
 #### All Timepoint averaged ####
 predictions_all<- rep(list(na.omit(c(-ct))),500)
-
+ 
 labels_all<-status_samples_bin[,which(!is.na(c(ct)))] 
 labels_all_list<-as.list(as.data.frame(t(labels_all))) 
 
 pred_all<- prediction(predictions_all, labels_all_list) 
 perf_all<- performance(pred_all,"tpr","fpr") 
+perf_ss<- performance(pred_all,"sens","spec") 
+
 plot(roc_ct_all,
      avg= "threshold",
      spread.estimate= "stddev",
@@ -129,44 +134,6 @@ plot(roc_ct_all,
      lwd=2,
      main= "CT, all time")
 
+### get optimal cutoff for diagnostic
 
-createROC<- function(diagnostic, timepoint, binary_status){
-  if(length(unique(as.vector(as.matrix(binary_status))))!=2){
-    stop("Status must be binary")
-  }
-  
-  a<- 1 + 210*(timepoint-1)
-  b<- 210*timepoint
-  
-  l<- binary_status[,a:b]
-  
-  prediction<- rep(list(na.omit(diagnostic[,timepoint])),500)
-  label<- l[,which(!is.na(diagnostic[,timepoint]))]
-  label_list<- as.list(as.data.frame(t(label)))
-  
-  pred<-prediction(prediction,label_list)
-  roc<- performance(pred,"tpr","fpr")
-  
-  return(roc)
-}
-createSS<- function(diagnostic, timepoint, binary_status){
-  if(length(unique(as.vector(as.matrix(binary_status))))!=2){
-    stop("Status must be binary")
-  }
-  
-  a<- 1 + 210*(timepoint-1)
-  b<- 210*timepoint
-  
-  l<- binary_status[,a:b]
-  
-  prediction<- rep(list(na.omit(diagnostic[,timepoint])),500)
-  label<- l[,which(!is.na(diagnostic[,timepoint]))]
-  label_list<- as.list(as.data.frame(t(label)))
-  
-  pred<-prediction(prediction,label_list)
-  ss<- performance(pred, "sens", "spec")
-  
-  return(ss)
-}
-
-
+getoptcut(perf_ss,500)
