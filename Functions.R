@@ -359,6 +359,7 @@ eggworm <- function (N, Ti, KK, Gscore, CT, Hatch) {
 } 
 
 ###### ROC FUNCTIONS ######
+require(ROCR)
 
 createROC<- function(diagnostic, timepoint, binary_status){
   if(length(unique(as.vector(as.matrix(binary_status))))!=2){
