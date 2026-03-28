@@ -165,6 +165,7 @@ ggplot(dbs_logcurve, aes(x=x*24,y=meanline)) +
   theme_bw()
 
 ### Status at each timepoint #####
+set.seed(123)
 # Posterior probability estimates #
 timepoints<- c("PreT", "3wk", "9wk", "6mo")
 prob<- select(out, starts_with("prob["))
@@ -261,6 +262,7 @@ ggplot(prev.df, aes(x=factor(tmp, level=timepoints), y=total)) +
 source("Functions.R")
 
 #status 1 = uninfected(1), status 2 and 3 = infected (2)
+status_samples_bin<- status.samples
 status_samples_bin[status.samples==3]<-2
 
 #### ROC Stool qPCR CT ####
@@ -508,7 +510,7 @@ abline(0,1)
 
 dev.off()
 
-### Sensitivity Specificity
+### Sensitivity Specificity at each timepoint 
 
 #sesp<-matrix(NA,4,8)
 #sesp[1,]<- as.numeric(c(getss(ss.kk.1,500,0.1)[,1:2],getss(ss.kk.2,500,0.1)[,1:2],getss(ss.kk.3,500,0.15)[,1:2],getss(ss.kk.4,500,0.1)[,1:2]))
