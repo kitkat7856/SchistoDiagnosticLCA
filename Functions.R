@@ -418,4 +418,21 @@ getoptcut<- function(ss, samples){
   print(d)
 }
 
+getss<- function(ss, samples, cut){
+  se<-c()
+  sp<-c()
+  for(i in 1:samples){
+    cutpoints<- abs(c(unlist(ss@alpha.values[[i]])))
+    sensitivity<- c(unlist(ss@y.values[[i]]))
+    specificity<- c(unlist(ss@x.values[[i]]))
+    
+    ix<-which.min(abs(cutpoints-cut))
+    
+    se[i]<- sensitivity[ix]
+    sp[i]<- specificity[ix]
+    
+  }
+  d<- data.frame(se= mean(se), sp=mean(sp), sdse=sd(se), sdsp=sd(sp))
+  print(d)
+}
 
